@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - StudentStay</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .admin-login-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+            padding: 40px 20px;
+        }
+        .admin-login-box {
+            background: #ffffff;
+            padding: 50px;
+            border-radius: 20px;
+            box-shadow: 0 25px 80px rgba(0,0,0,0.4);
+            width: 100%;
+            max-width: 460px;
+            position: relative;
+            overflow: hidden;
+        }
+        .admin-login-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, #4F46E5, #7C3AED, #EC4899);
+        }
+        .admin-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, #4F46E5, #7C3AED);
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+        }
+        .admin-login-box h1 {
+            font-size: 28px;
+            font-weight: 800;
+            color: #0f172a;
+            margin-bottom: 8px;
+        }
+        .admin-login-box p {
+            color: #64748b;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+        .admin-form .form-group { margin-bottom: 22px; }
+        .admin-form label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #334155;
+            font-size: 14px;
+        }
+        .admin-form .input-wrap {
+            position: relative;
+        }
+        .admin-form .input-wrap i {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+            font-size: 16px;
+        }
+        .admin-form input {
+            width: 100%;
+            padding: 13px 16px 13px 44px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 14px;
+            transition: all 0.3s;
+            background: #f8fafc;
+        }
+        .admin-form input:focus {
+            outline: none;
+            border-color: #4F46E5;
+            background: #fff;
+            box-shadow: 0 0 0 4px rgba(79,70,229,0.1);
+        }
+        .admin-form .btn-admin {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #4F46E5, #7C3AED);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .admin-form .btn-admin:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(79,70,229,0.4);
+        }
+        .admin-form .btn-admin:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        .admin-error {
+            padding: 12px 16px;
+            background: #fef2f2;
+            color: #dc2626;
+            border: 1px solid #fecaca;
+            border-radius: 8px;
+            font-size: 13px;
+            margin-bottom: 16px;
+            display: none;
+        }
+
+        /* Admin Dashboard */
+        .admin-dashboard { display: none; min-height: 100vh; background: #f1f5f9; }
+        .admin-topbar {
+            background: linear-gradient(135deg, #0f172a, #1e293b);
+            color: white;
+            padding: 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .admin-topbar .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 20px;
+        }
+        .admin-topbar .admin-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 20px;
+            font-weight: 700;
+        }
+        .admin-topbar .admin-brand i {
+            font-size: 24px;
+            color: #818cf8;
+        }
+        .admin-topbar .admin-user {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .admin-topbar .admin-user span {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+        .admin-topbar .btn-logout {
+            padding: 8px 20px;
+            background: rgba(255,255,255,0.1);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        .admin-topbar .btn-logout:hover {
+            background: rgba(255,255,255,0.2);
+        }
+        .admin-content { padding: 30px 0; }
+        .admin-content .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        .admin-welcome {
+            margin-bottom: 30px;
+        }
+        .admin-welcome h1 {
+            font-size: 28px;
+            font-weight: 800;
+            color: #0f172a;
+            margin-bottom: 4px;
+        }
+        .admin-welcome p { color: #64748b; font-size: 15px; }
+
+        .admin-stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .admin-stat-card {
+            background: white;
+            padding: 24px;
+            border-radius: 14px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .admin-stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+        .admin-stat-card .stat-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+        .admin-stat-card .stat-icon.blue { background: #eff6ff; color: #3b82f6; }
+        .admin-stat-card .stat-icon.green { background: #ecfdf5; color: #10b981; }
+        .admin-stat-card .stat-icon.purple { background: #f5f3ff; color: #8b5cf6; }
+        .admin-stat-card .stat-icon.orange { background: #fff7ed; color: #f97316; }
+        .admin-stat-card .stat-info h3 {
+            font-size: 28px;
+            font-weight: 800;
+            color: #0f172a;
+            line-height: 1;
+            margin-bottom: 4px;
+        }
+        .admin-stat-card .stat-info p {
+            font-size: 13px;
+            color: #64748b;
+            font-weight: 500;
+        }
+
+        .admin-panels {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        .admin-panel {
+            background: white;
+            border-radius: 14px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+        .admin-panel-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid #f1f5f9;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .admin-panel-header h2 {
+            font-size: 16px;
+            font-weight: 700;
+            color: #0f172a;
+        }
+        .admin-panel-body {
+            padding: 16px 24px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .admin-list-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #f8fafc;
+        }
+        .admin-list-item:last-child { border-bottom: none; }
+        .admin-list-item .item-info h4 {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 2px;
+        }
+        .admin-list-item .item-info p {
+            font-size: 12px;
+            color: #94a3b8;
+        }
+        .admin-list-item .item-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        .badge-available { background: #ecfdf5; color: #059669; }
+        .badge-pending { background: #fff7ed; color: #ea580c; }
+        .badge-student { background: #eff6ff; color: #2563eb; }
+        .badge-landlord { background: #f5f3ff; color: #7c3aed; }
+        .badge-admin { background: #fef2f2; color: #dc2626; }
+
+        .admin-back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: #64748b;
+            text-decoration: none;
+            font-size: 13px;
+            margin-top: 30px;
+            transition: color 0.2s;
+        }
+        .admin-back-link:hover { color: #4F46E5; }
+
+        @media (max-width: 1024px) {
+            .admin-stats { grid-template-columns: repeat(2, 1fr); }
+            .admin-panels { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 640px) {
+            .admin-stats { grid-template-columns: 1fr; }
+            .admin-login-box { padding: 30px 24px; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Admin Login -->
+    <div class="admin-login-container" id="adminLoginSection">
+        <div class="admin-login-box">
+            <div class="admin-badge">
+                <i class="fas fa-shield-alt"></i> Admin Access
+            </div>
+            <h1>Admin Panel</h1>
+            <p>Sign in with your administrator credentials</p>
+
+            <div class="admin-error" id="adminError"></div>
+
+            <form class="admin-form" id="adminLoginForm">
+                <div class="form-group">
+                    <label for="adminEmail">Email Address</label>
+                    <div class="input-wrap">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" id="adminEmail" placeholder="admin@studentstay.com" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="adminPassword">Password</label>
+                    <div class="input-wrap">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="adminPassword" placeholder="Enter admin password" required>
+                    </div>
+                </div>
+                <button type="submit" class="btn-admin" id="adminSubmitBtn">
+                    <i class="fas fa-sign-in-alt"></i> Sign In to Dashboard
+                </button>
+            </form>
+
+            <a href="/" class="admin-back-link">
+                <i class="fas fa-arrow-left"></i> Back to Website
+            </a>
+        </div>
+    </div>
+
+    <!-- Admin Dashboard -->
+    <div class="admin-dashboard" id="adminDashboardSection">
+        <div class="admin-topbar">
+            <div class="container">
+                <div class="admin-brand">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>StudentStay Admin</span>
+                </div>
+                <div class="admin-user">
+                    <span id="adminNameDisplay">Admin</span>
+                    <button class="btn-logout" onclick="adminLogout()">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="admin-content">
+            <div class="container">
+                <div class="admin-welcome">
+                    <h1>Welcome back, Admin 👋</h1>
+                    <p>Here's an overview of your platform</p>
+                </div>
+
+                <div class="admin-stats">
+                    <div class="admin-stat-card">
+                        <div class="stat-icon blue"><i class="fas fa-building"></i></div>
+                        <div class="stat-info">
+                            <h3 id="adminTotalProperties">0</h3>
+                            <p>Total Properties</p>
+                        </div>
+                    </div>
+                    <div class="admin-stat-card">
+                        <div class="stat-icon green"><i class="fas fa-check-circle"></i></div>
+                        <div class="stat-info">
+                            <h3 id="adminAvailableProperties">0</h3>
+                            <p>Available</p>
+                        </div>
+                    </div>
+                    <div class="admin-stat-card">
+                        <div class="stat-icon purple"><i class="fas fa-users"></i></div>
+                        <div class="stat-info">
+                            <h3 id="adminTotalUsers">0</h3>
+                            <p>Total Users</p>
+                        </div>
+                    </div>
+                    <div class="admin-stat-card">
+                        <div class="stat-icon orange"><i class="fas fa-calendar-check"></i></div>
+                        <div class="stat-info">
+                            <h3 id="adminTotalBookings">0</h3>
+                            <p>Total Bookings</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="admin-panels">
+                    <div class="admin-panel">
+                        <div class="admin-panel-header">
+                            <h2><i class="fas fa-building" style="color:#3b82f6;margin-right:8px;"></i> Recent Properties</h2>
+                        </div>
+                        <div class="admin-panel-body" id="adminPropertiesList">
+                            <p style="color:#94a3b8;text-align:center;padding:20px;">Loading...</p>
+                        </div>
+                    </div>
+                    <div class="admin-panel">
+                        <div class="admin-panel-header">
+                            <h2><i class="fas fa-users" style="color:#8b5cf6;margin-right:8px;"></i> Recent Users</h2>
+                        </div>
+                        <div class="admin-panel-body" id="adminUsersList">
+                            <p style="color:#94a3b8;text-align:center;padding:20px;">Loading...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <a href="/" class="admin-back-link">
+                    <i class="fas fa-arrow-left"></i> Back to Website
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Check if already logged in as admin
+        const adminToken = localStorage.getItem('adminToken');
+        const adminUser = localStorage.getItem('adminUser');
+
+        if (adminToken && adminUser) {
+            try {
+                const user = JSON.parse(adminUser);
+                if (user.role === 'admin') {
+                    showDashboard(user);
+                }
+            } catch(e) {
+                localStorage.removeItem('adminToken');
+                localStorage.removeItem('adminUser');
+            }
+        }
+
+        // Login form
+        document.getElementById('adminLoginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('adminSubmitBtn');
+            const errorDiv = document.getElementById('adminError');
+
+            errorDiv.style.display = 'none';
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Signing in...';
+
+            const email = document.getElementById('adminEmail').value.trim();
+            const password = document.getElementById('adminPassword').value;
+
+            try {
+                const response = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+                const data = await response.json();
+
+                if (data.success && data.data.user.role === 'admin') {
+                    localStorage.setItem('adminToken', data.data.token);
+                    localStorage.setItem('adminUser', JSON.stringify(data.data.user));
+                    showDashboard(data.data.user);
+                } else if (data.success && data.data.user.role !== 'admin') {
+                    errorDiv.textContent = 'Access denied. Admin privileges required.';
+                    errorDiv.style.display = 'block';
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Sign In to Dashboard';
+                } else {
+                    errorDiv.textContent = data.message || 'Invalid credentials';
+                    errorDiv.style.display = 'block';
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Sign In to Dashboard';
+                }
+            } catch (error) {
+                errorDiv.textContent = 'Connection error. Please try again.';
+                errorDiv.style.display = 'block';
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Sign In to Dashboard';
+            }
+        });
+
+        async function showDashboard(user) {
+            document.getElementById('adminLoginSection').style.display = 'none';
+            document.getElementById('adminDashboardSection').style.display = 'block';
+            document.getElementById('adminNameDisplay').textContent = user.name || 'Admin';
+
+            const token = localStorage.getItem('adminToken');
+
+            // Load stats
+            try {
+                const statsRes = await fetch('/api/admin/stats', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const statsData = await statsRes.json();
+                if (statsData.success) {
+                    document.getElementById('adminTotalProperties').textContent = statsData.data.totalProperties || 0;
+                    document.getElementById('adminAvailableProperties').textContent = statsData.data.availableProperties || 0;
+                    document.getElementById('adminTotalUsers').textContent = statsData.data.totalUsers || 0;
+                    document.getElementById('adminTotalBookings').textContent = statsData.data.totalBookings || 0;
+                }
+            } catch(e) { console.error('Stats error:', e); }
+
+            // Load recent properties
+            try {
+                const propsRes = await fetch('/api/properties?limit=8');
+                const propsData = await propsRes.json();
+                if (propsData.success && propsData.data.length > 0) {
+                    document.getElementById('adminPropertiesList').innerHTML = propsData.data.map(p => `
+                        <div class="admin-list-item">
+                            <div class="item-info">
+                                <h4>${p.title}</h4>
+                                <p>${p.address?.area || ''}, ${p.address?.city || ''} • BDT ${p.price?.amount?.toLocaleString() || 0}</p>
+                            </div>
+                            <span class="item-badge badge-${p.status}">${p.status}</span>
+                        </div>
+                    `).join('');
+                } else {
+                    document.getElementById('adminPropertiesList').innerHTML = '<p style="color:#94a3b8;text-align:center;padding:20px;">No properties found</p>';
+                }
+            } catch(e) { console.error('Properties error:', e); }
+
+            // Load recent users
+            try {
+                const usersRes = await fetch('/api/admin/users', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const usersData = await usersRes.json();
+                if (usersData.success && usersData.data.length > 0) {
+                    document.getElementById('adminUsersList').innerHTML = usersData.data.map(u => `
+                        <div class="admin-list-item">
+                            <div class="item-info">
+                                <h4>${u.name}</h4>
+                                <p>${u.email}</p>
+                            </div>
+                            <span class="item-badge badge-${u.role}">${u.role}</span>
+                        </div>
+                    `).join('');
+                } else {
+                    document.getElementById('adminUsersList').innerHTML = '<p style="color:#94a3b8;text-align:center;padding:20px;">No users found</p>';
+                }
+            } catch(e) { console.error('Users error:', e); }
+        }
+
+        function adminLogout() {
+            localStorage.removeItem('adminToken');
+            localStorage.removeItem('adminUser');
+            document.getElementById('adminDashboardSection').style.display = 'none';
+            document.getElementById('adminLoginSection').style.display = 'flex';
+            document.getElementById('adminLoginForm').reset();
+        }
+    </script>
+</body>
+</html>

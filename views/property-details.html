@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Property Details - StudentStay</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <i class="fas fa-home"></i>
+                <span>StudentStay</span>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="/">Home</a></li>
+                <li><a href="/properties" class="active">Properties</a></li>
+                <li><a href="/dashboard">Dashboard</a></li>
+            </ul>
+            <div class="nav-actions">
+                <a href="/login" class="btn btn-outline">Login</a>
+                <a href="/register" class="btn btn-primary">Sign Up</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="property-details-page">
+        <div class="container">
+            <div style="margin-bottom: 20px;">
+                <a href="/properties" style="color: #4F46E5; text-decoration: none;">
+                    <i class="fas fa-arrow-left"></i> Back to Properties
+                </a>
+            </div>
+
+            <div id="propertyContent" style="display: none;">
+                <!-- Hero Image -->
+                <div class="property-hero">
+                    <img id="propertyImage" src="" alt="Property" style="width: 100%; height: 500px; object-fit: cover; border-radius: 8px;">
+                </div>
+
+                <!-- Basic Info -->
+                <div class="property-header" style="margin-top: 30px;">
+                    <div>
+                        <h1 id="propertyTitle"></h1>
+                        <p id="propertyAddress" style="color: #666; font-size: 16px; margin-top: 8px;">
+                            <i class="fas fa-map-marker-alt"></i> <span></span>
+                        </p>
+                    </div>
+                    <div style="text-align: right;">
+                        <div style="font-size: 24px; font-weight: 700; color: #4F46E5; margin-bottom: 8px;">
+                            <span id="propertyPrice"></span> / <span id="propertyPeriod"></span>
+                        </div>
+                        <button class="btn btn-primary" id="bookBtn" onclick="goToBooking()">Book Now</button>
+                    </div>
+                </div>
+
+                <hr style="margin: 30px 0; border: none; border-top: 1px solid #eee;">
+
+                <!-- Details Grid -->
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; margin-bottom: 30px;">
+                    <div class="detail-card" style="padding: 20px; background: #f9fafb; border-radius: 8px;">
+                        <i class="fas fa-bed" style="font-size: 20px; color: #4F46E5; margin-right: 10px;"></i>
+                        <div>
+                            <p style="color: #666; font-size: 14px;">Total Rooms</p>
+                            <p style="font-size: 18px; font-weight: 600;" id="propertyRooms"></p>
+                        </div>
+                    </div>
+                    <div class="detail-card" style="padding: 20px; background: #f9fafb; border-radius: 8px;">
+                        <i class="fas fa-bath" style="font-size: 20px; color: #4F46E5; margin-right: 10px;"></i>
+                        <div>
+                            <p style="color: #666; font-size: 14px;">Bathrooms</p>
+                            <p style="font-size: 18px; font-weight: 600;" id="propertyBaths"></p>
+                        </div>
+                    </div>
+                    <div class="detail-card" style="padding: 20px; background: #f9fafb; border-radius: 8px;">
+                        <i class="fas fa-star" style="font-size: 20px; color: #FFB800; margin-right: 10px;"></i>
+                        <div>
+                            <p style="color: #666; font-size: 14px;">Rating</p>
+                            <p style="font-size: 18px; font-weight: 600;" id="propertyRating"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Description -->
+                <div style="margin-bottom: 30px;">
+                    <h2 style="margin-bottom: 15px;">About This Property</h2>
+                    <p id="propertyDescription" style="line-height: 1.8; color: #4b5563;"></p>
+                </div>
+
+                <!-- Amenities -->
+                <div style="margin-bottom: 30px;">
+                    <h2 style="margin-bottom: 15px;">Amenities</h2>
+                    <div id="amenitiesList" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px;"></div>
+                </div>
+
+                <!-- Rules -->
+                <div style="margin-bottom: 30px; background: #f9fafb; padding: 20px; border-radius: 8px;">
+                    <h2 style="margin-bottom: 15px;">House Rules</h2>
+                    <div id="rulesList"></div>
+                </div>
+
+                <!-- Landlord Info -->
+                <div style="margin-bottom: 30px; background: #f9fafb; padding: 20px; border-radius: 8px;">
+                    <h2 style="margin-bottom: 15px;">Contact Landlord</h2>
+                    <div style="display: flex; align-items: center; gap: 15px;">
+                        <img id="landlordImage" src="" alt="Landlord" style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover;">
+                        <div>
+                            <p style="font-weight: 600; font-size: 16px;" id="landlordName"></p>
+                            <p style="color: #666; font-size: 14px;" id="landlordPhone"></p>
+                        </div>
+                        <button class="btn btn-primary" onclick="contactLandlord()">Message</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="loadingContent" style="text-align: center; padding: 50px;">
+                <p>Loading property details...</p>
+            </div>
+
+            <div id="errorContent" style="display: none; text-align: center; padding: 50px;">
+                <p style="color: #EF4444; font-size: 16px;">Property not found</p>
+                <a href="/properties" class="btn btn-primary" style="margin-top: 20px;">Back to Properties</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/main.js"></script>
+    <script>
+        async function loadPropertyDetails() {
+            const params = new URLSearchParams(window.location.search);
+            const propertyId = params.get('id');
+
+            if (!propertyId) {
+                document.getElementById('errorContent').style.display = 'block';
+                document.getElementById('loadingContent').style.display = 'none';
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/properties/${propertyId}`);
+                const data = await response.json();
+
+                if (!data.success) {
+                    document.getElementById('errorContent').style.display = 'block';
+                    document.getElementById('loadingContent').style.display = 'none';
+                    return;
+                }
+
+                const property = data.data;
+
+                // Populate property details
+                document.getElementById('propertyTitle').textContent = property.title;
+                document.getElementById('propertyImage').src = property.images[0]?.url || 'https://via.placeholder.com/800x500';
+                document.getElementById('propertyAddress').innerHTML = `
+                    <i class="fas fa-map-marker-alt"></i> 
+                    ${property.address.area}, ${property.address.city}
+                `;
+                document.getElementById('propertyPrice').textContent = `${property.price.currency} ${property.price.amount.toLocaleString()}`;
+                document.getElementById('propertyPeriod').textContent = property.price.period;
+                document.getElementById('propertyRooms').textContent = property.rooms.available + '/' + property.rooms.total;
+                document.getElementById('propertyBaths').textContent = property.rooms.bathrooms || 'N/A';
+                document.getElementById('propertyRating').textContent = property.rating.average.toFixed(1) + ' ★';
+                document.getElementById('propertyDescription').textContent = property.description;
+
+                // Amenities
+                const amenitiesHtml = property.amenities.map(amenity => `
+                    <div style="padding: 10px; background: white; border-radius: 6px; text-align: center;">
+                        <i class="fas fa-check" style="color: #10B981;"></i> ${amenity}
+                    </div>
+                `).join('');
+                document.getElementById('amenitiesList').innerHTML = amenitiesHtml || '<p>No amenities listed</p>';
+
+                // Rules
+                const rulesHtml = `
+                    <p><strong>Gender:</strong> ${property.rules.gender || 'Any'}</p>
+                    <p><strong>Smoking:</strong> ${property.rules.smoking ? 'Allowed' : 'Not Allowed'}</p>
+                    <p><strong>Pets:</strong> ${property.rules.pets ? 'Allowed' : 'Not Allowed'}</p>
+                    <p><strong>Visitors:</strong> ${property.rules.visitors ? 'Allowed' : 'Not Allowed'}</p>
+                `;
+                document.getElementById('rulesList').innerHTML = rulesHtml;
+
+                // Landlord Info
+                if (property.landlord) {
+                    document.getElementById('landlordName').textContent = property.landlord.name || 'Landlord';
+                    document.getElementById('landlordImage').src = property.landlord.profileImage || 'https://ui-avatars.com/api/?name=Landlord';
+                    document.getElementById('landlordPhone').textContent = property.landlord.phone || 'Contact listed';
+                }
+
+                document.getElementById('propertyContent').style.display = 'block';
+                document.getElementById('loadingContent').style.display = 'none';
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('errorContent').style.display = 'block';
+                document.getElementById('loadingContent').style.display = 'none';
+            }
+        }
+
+        function goToBooking() {
+            const params = new URLSearchParams(window.location.search);
+            const propertyId = params.get('id');
+            
+            const user = getCurrentUser();
+            if (!user) {
+                alert('Please login to book a property');
+                window.location.href = '/login';
+            } else {
+                alert('Booking functionality coming soon!');
+                // window.location.href = `/booking?property=${propertyId}`;
+            }
+        }
+
+        function contactLandlord() {
+            alert('Messaging landlord - Coming soon!');
+        }
+
+        function updateNavbarAuth() {
+            const token = localStorage.getItem('token');
+            const user = localStorage.getItem('user');
+            const navActions = document.querySelector('.nav-actions');
+            
+            if (!navActions) return;
+            
+            if (token && user) {
+                try {
+                    const userData = JSON.parse(user);
+                    navActions.innerHTML = `
+                        <span class="user-name">${userData.name || userData.email}</span>
+                        <div class="user-menu">
+                            <a href="/dashboard" class="btn btn-outline">Dashboard</a>
+                            <a href="/add-property" class="btn btn-outline">Add Property</a>
+                            <button class="btn btn-primary" onclick="logout()">Logout</button>
+                        </div>
+                    `;
+                } catch (e) {
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('user');
+                }
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.location.href = '/login';
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            updateNavbarAuth();
+            loadPropertyDetails();
+        });
+    </script>
+</body>
+</html>
