@@ -48,6 +48,12 @@ export const createBooking = async (req, res) => {
 
     property.rooms.available -= 1;
     property.bookings += 1;
+    
+    // Automatically update property status if all rooms are booked
+    if (property.rooms.available === 0) {
+      property.status = 'occupied';
+    }
+    
     await property.save();
 
     res.status(201).json({
@@ -134,6 +140,12 @@ export const updateBookingStatus = async (req, res) => {
     if (status === 'cancelled' || status === 'rejected') {
       const property = await Property.findById(booking.property);
       property.rooms.available += 1;
+      
+      // Re-list as available if there are rooms
+      if (property.rooms.available > 0 && property.status !== 'available') {
+        property.status = 'available';
+      }
+      
       await property.save();
     }
 
@@ -178,6 +190,12 @@ export const cancelBooking = async (req, res) => {
 
     const property = await Property.findById(booking.property);
     property.rooms.available += 1;
+    
+    // Re-list as available if there are rooms
+    if (property.rooms.available > 0 && property.status !== 'available') {
+      property.status = 'available';
+    }
+    
     await property.save();
 
     res.json({

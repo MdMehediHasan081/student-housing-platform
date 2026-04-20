@@ -198,7 +198,7 @@
             }
         }
 
-        function goToBooking() {
+        async function goToBooking() {
             const params = new URLSearchParams(window.location.search);
             const propertyId = params.get('id');
             
@@ -206,9 +206,53 @@
             if (!user) {
                 alert('Please login to book a property');
                 window.location.href = '/login';
-            } else {
-                alert('Booking functionality coming soon!');
-                // window.location.href = `/booking?property=${propertyId}`;
+                return;
+            }
+            
+            if (user.role !== 'student') {
+                alert('Only students can book properties!');
+                return;
+            }
+
+            try {
+                // Fetch property to get price
+                const propRes = await fetch(`/api/properties/${propertyId}`);
+                const propData = await propRes.json();
+                const property = propData.data;
+
+                const startDate = new Date();
+                const endDate = new Date();
+                endDate.setMonth(endDate.getMonth() + 1);
+
+                const bookingData = {
+                    propertyId: propertyId,
+                    startDate: startDate.toISOString(),
+                    endDate: endDate.toISOString(),
+                    duration: 1,
+                    totalAmount: property.price.amount,
+                    notes: 'Direct booking from property details page'
+                };
+
+                const response = await fetch('/api/bookings', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    },
+                    body: JSON.stringify(bookingData)
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    alert('Booking successful! You can view it in your dashboard.');
+                    window.location.href = '/dashboard';
+                } else {
+                    alert('Error creating booking: ' + data.message);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error processing booking.');
             }
         }
 
